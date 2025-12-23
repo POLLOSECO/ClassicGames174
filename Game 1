@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retro Paddle Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #000;
+            color: #fff;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #00ff00;
+        }
+        .game-area {
+            position: relative;
+            width: 600px;
+            height: 400px;
+            background-color: #000;
+            border: 2px solid #fff;
+            margin: 20px auto;
+            overflow: hidden;
+        }
+        .paddle {
+            position: absolute;
+            width: 10px;
+            height: 80px;
+            background-color: #fff;
+        }
+        .paddle.left {
+            left: 10px;
+            top: 160px;
+        }
+        .paddle.right {
+            right: 10px;
+            top: 160px;
+        }
+        .ball {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #fff;
+            border-radius: 50%;
+            top: 195px;
+            left: 295px;
+        }
+        .score {
+            font-size: 24px;
+            margin: 10px 0;
+        }
+        button {
+            background-color: #00ff00;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            margin: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #00cc00;
+        }
+        .message {
+            font-size: 18px;
+            margin: 20px 0;
+            min-height: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Retro Paddle Game</h1>
+
+        <div class="message" id="message">
+            Bienvenido a Retro Paddle Game.  
+            Pulsa “Nuevo Juego” para empezar.  
+            Jugador 1: flechas ↑ ↓ | Jugador 2: W / S
+        </div>
+
+        <div class="score">
+            Jugador 1: <span id="score1">0</span> - Jugador 2: <span id="score2">0</span>
+        </div>
+
+        <div class="game-area" id="game-area">
+            <div class="paddle left" id="paddle1"></div>
+            <div class="paddle right" id="paddle2"></div>
+            <div class="ball" id="ball"></div>
+        </div>
+
+        <button id="fullscreen-btn">Pantalla completa</button>
+        <button id="pause-btn">Pausa</button>
+        <button id="new-game-btn">Nuevo juego</button>
+    </div>
+
+    <script>
+        const paddle1 = document.getElementById('paddle1');
+        const paddle2 = document.getElementById('paddle2');
+        const ball = document.getElementById('ball');
+        const score1Element = document.getElementById('score1');
+        const score2Element = document.getElementById('score2');
+        const messageElement = document.getElementById('message');
+        const newGameBtn = document.getElementById('new-game-btn');
+        const fullscreenBtn = document.getElementById('fullscreen-btn');
+        const pauseBtn = document.getElementById('pause-btn');
+
+        let score1 = 0;
+        let score2 = 0;
+        let ballX = 295;
+        let ballY = 195;
+        let ballSpeedX = 3;
+        let ballSpeedY = 3;
+        let paddle1Y = 160;
+        let paddle2Y = 160;
+
+        const paddleSpeed = 5;
+        const paddleHeight = 80;
+        const gameWidth = 600;
+        const gameHeight = 400;
+
+        let gameRunning = false;
+        let isPaused = false;
+        let gameLoop;
+
+        function update() {
+            if (!gameRunning || isPaused) return;
+
+            ballX += ballSpeedX;
+            ballY += ballSpeedY;
+
+            if (ballY <= 0 || ballY >= gameHeight - 10) {
+                ballSpeedY *= -1;
+            }
+
+            if (
+                ballX <= 20 &&
+                ballY >= paddle1Y &&
+                ballY <= paddle1Y + paddleHeight
+            ) {
+                ballSpeedX *= -1.05;
+                ballSpeedY *= 1.05;
+            }
+
+            if (
+                ballX >= gameWidth - 30 &&
+                ballY >= paddle2Y &&
+                ballY <= paddle2Y + paddleHeight
+            ) {
+                ballSpeedX *= -1.05;
+                ballSpeedY *= 1.05;
+            }
+
+            if (ballX < 0) {
+                score2++;
+                resetBall();
+            }
+
+            if (ballX > gameWidth - 10) {
+                score1++;
+                resetBall();
+            }
+
+            ball.style.left = ballX + 'px';
+            ball.style.top = ballY + 'px';
+            paddle1.style.top = paddle1Y + 'px';
+            paddle2.style.top = paddle2Y + 'px';
+
+            if (score1 >= 5 || score2 >= 5) {
+                gameRunning = false;
+                clearInterval(gameLoop);
+                const winner = score1 >= 5 ? 'Jugador 1' : 'Jugador 2';
+                messageElement.textContent =
+                    `Fin de la partida. Gana ${winner}. Pulsa “Nuevo juego” para volver a jugar.`;
+            }
+        }
+
+        function resetBall() {
+            ballX = 295;
+            ballY = 195;
+            ballSpeedX = 3 * (Math.random() > 0.5 ? 1 : -1);
+            ballSpeedY = 3 * (Math.random() > 0.5 ? 1 : -1);
+            score1Element.textContent = score1;
+            score2Element.textContent = score2;
+        }
+
+        function startGame() {
+            score1 = 0;
+            score2 = 0;
+            paddle1Y = 160;
+            paddle2Y = 160;
+            resetBall();
+            gameRunning = true;
+            isPaused = false;
+            pauseBtn.textContent = 'Pausa';
+            messageElement.textContent =
+                'Partida en curso. Jugador 1: flechas ↑ ↓ | Jugador 2: W / S';
+            gameLoop = setInterval(update, 16);
+        }
+
+        function togglePause() {
+            if (!gameRunning) return;
+            isPaused = !isPaused;
+            pauseBtn.textContent = isPaused ? 'Reanudar' : 'Pausa';
+            messageElement.textContent = isPaused
+                ? 'Juego en pausa'
+                : 'Partida en curso';
+        }
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+                fullscreenBtn.textContent = 'Salir de pantalla completa';
+            } else {
+                document.exitFullscreen();
+                fullscreenBtn.textContent = 'Pantalla completa';
+            }
+        }
+
+        const keys = {};
+        document.addEventListener('keydown', e => (keys[e.key] = true));
+        document.addEventListener('keyup', e => (keys[e.key] = false));
+
+        setInterval(() => {
+            if (!gameRunning || isPaused) return;
+
+            if (keys['ArrowUp'] && paddle1Y > 0) paddle1Y -= paddleSpeed;
+            if (keys['ArrowDown'] && paddle1Y < gameHeight - paddleHeight)
+                paddle1Y += paddleSpeed;
+
+            if (keys['w'] && paddle2Y > 0) paddle2Y -= paddleSpeed;
+            if (keys['s'] && paddle2Y < gameHeight - paddleHeight)
+                paddle2Y += paddleSpeed;
+        }, 16);
+
+        newGameBtn.addEventListener('click', startGame);
+        pauseBtn.addEventListener('click', togglePause);
+        fullscreenBtn.addEventListener('click', toggleFullscreen);
+    </script>
+</body>
+</html>
