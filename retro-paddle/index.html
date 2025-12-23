@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Classic Games Portal</title>
+<style>
+/* --- Reset y estilos generales --- */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Courier New', monospace;
+    background: radial-gradient(circle at top, #000 0%, #111 100%);
+    color: #fff;
+    text-align: center;
+}
+
+/* --- Cabecera --- */
+header {
+    padding: 20px;
+    background-color: #000;
+    border-bottom: 2px solid #0f0;
+}
+header h1 {
+    font-size: 3em;
+    color: #00ff00;
+    margin: 0;
+    text-shadow: 2px 2px #0f0;
+}
+header p {
+    font-size: 1.2em;
+    margin-top: 5px;
+    color: #0f0;
+}
+
+/* --- Contenedor de juegos --- */
+.games-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 20px;
+    gap: 20px;
+}
+
+/* --- Tarjetas de juego --- */
+.game-card {
+    background: #111;
+    border: 2px solid #00ff00;
+    border-radius: 10px;
+    width: 220px;
+    padding: 15px;
+    transition: transform 0.3s, background 0.3s;
+    cursor: pointer;
+}
+.game-card:hover {
+    transform: scale(1.05);
+    background: #222;
+}
+.game-card img {
+    width: 100%;
+    border-radius: 5px;
+    border: 1px solid #0f0;
+}
+.game-card h3 {
+    margin: 10px 0 5px;
+    color: #0f0;
+}
+
+/* --- Botones --- */
+button {
+    background-color: #00ff00;
+    color: #000;
+    border: none;
+    padding: 10px 20px;
+    margin-top: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+button:hover {
+    background-color: #0f0;
+}
+
+/* --- Pie de página --- */
+footer {
+    margin-top: 30px;
+    padding: 10px;
+    border-top: 2px solid #0f0;
+    color: #0f0;
+}
+</style>
+</head>
+<body>
+
+<header>
+    <h1>🎮 Classic Games Portal</h1>
+    <p>¡Disfruta de los mejores juegos retro online!</p>
+</header>
+
+<section class="games-container">
+    <!-- Juego 1 -->
+    <div class="game-card">
+        <img src="img/retro-paddle.png" alt="Retro Paddle">
+        <h3>Retro Paddle Game</h3>
+        <button onclick="location.href='retro-paddle/index.html'">Jugar</button>
+    </div>
+
+    <!-- Juego 2 -->
+    <div class="game-card">
+        <img src="img/portada-tetris.png" alt="Tetris">
+        <h3>Tetris</h3>
+        <button onclick="location.href='tetris/index.html'">Jugar</button>
+    </div>
+
+    <!-- Juego 3 -->
+    <div class="game-card">
+        <img src="img/snake.png" alt="Snake">
+        <h3>Snake</h3>
+        <button onclick="location.href='snake/index.html'">Jugar</button>
+    </div>
+</section>
+
+<footer>
+    <p>© 2025 Classic Games Portal | Todos los derechos reservados</p>
+</footer>
+
+</body>
+</html>
